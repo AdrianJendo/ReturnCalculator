@@ -8,6 +8,9 @@ verify_ssl = true
 [packages]
 requests = "*"
 black = "*"
+python-dotenv = "*"
+pip = "*"
+install = "*"
 
 [requires]
 python_version = "3.8"
