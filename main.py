@@ -1,4 +1,5 @@
 import sys
+from turtle import end_fill
 import requests
 import os
 import json
@@ -8,7 +9,7 @@ API_URL = os.environ.get("API_URL")
 API_KEY = os.environ.get("API_KEY")
 
 
-def get_price_df(ticker):
+def get_price_df(ticker, start_date, end_date):
     resp = requests.get(
         "{}/{}".format(API_URL, ticker), params={"serietype": "line", "apikey": API_KEY}
     )
@@ -17,22 +18,27 @@ def get_price_df(ticker):
     historical_data_df = pd.DataFrame(historical_data)
     historical_data_df = historical_data_df.set_index("date").sort_index()
 
-    print(historical_data_df.head())
+    return historical_data_df.loc[start_date:end_date]
 
-    plot = historical_data_df.plot(figsize=(20, 10))
+
+def plot_df(df, ticker):
+    plot = df.plot(figsize=(20, 10))
     plot.set_ylabel("Value of investment")
     plot.set_title("Investment Return")
     plot.get_legend().remove()
-    plot.figure.savefig("graphs/test.jpg")
-
-    return True
+    plot.figure.savefig("graphs/{}.jpg".format(ticker))
 
 
 if __name__ == "__main__":
-    ticker = sys.argv[1]
-    start_date = sys.argv[2]
-    end_date = sys.argv[3]
+    sys_args = sys.argv
+    ticker = sys_args[1]
+    start_date = sys_args[2]
+    end_date = sys_args[3]
+    contribution = int(sys.argv[4]) if len(sys_args) > 4 else 100
+    frequency = int(sys.argv[5]) if len(sys_args) > 5 else "monthly"
 
-    # /SPY?serietype=line&apikey=455df261819241f4292b36bf952efbe9
+    # monthly, weekly, quarterly, yearly, biannually
 
-    get_price_df(ticker)
+    # price_df = get_price_df(ticker, start_date, end_date)
+
+    # print(price_df)
