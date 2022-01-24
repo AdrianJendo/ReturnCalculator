@@ -1,9 +1,9 @@
 import sys
-from turtle import end_fill
 import requests
 import os
-import json
 import pandas as pd
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 API_URL = os.environ.get("API_URL")
 API_KEY = os.environ.get("API_KEY")
@@ -29,15 +29,34 @@ def plot_df(df, ticker):
     plot.figure.savefig("graphs/{}.jpg".format(ticker))
 
 
+def get_time_delta(frequency):
+    if frequency == "weekly":
+        return relativedelta(days=7)
+    elif frequency == "quarterly":
+        return relativedelta(months=3)
+    elif frequency == "biannually":
+        return relativedelta(months=6)
+    elif frequency == "annually":
+        return relativedelta(years=1)
+    else:  # default do monthly
+        return relativedelta(months=1)
+
+
 if __name__ == "__main__":
     sys_args = sys.argv
     ticker = sys_args[1]
     start_date = sys_args[2]
     end_date = sys_args[3]
     contribution = int(sys.argv[4]) if len(sys_args) > 4 else 100
-    frequency = int(sys.argv[5]) if len(sys_args) > 5 else "monthly"
+    frequency = sys.argv[5] if len(sys_args) > 5 else "monthly"
 
-    # monthly, weekly, quarterly, yearly, biannually
+    timedelta = get_time_delta(frequency)
+    start_datetime = datetime.strptime(start_date, "%Y-%m-%d")
+
+    first_time = start_datetime.strftime("%Y-%m-%d")
+    next_increment = (start_datetime + timedelta).strftime("%Y-%m-%d")
+
+    print(first_time, next_increment)
 
     # price_df = get_price_df(ticker, start_date, end_date)
 
