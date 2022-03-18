@@ -73,7 +73,7 @@ def main(options):
         days=7
     )  # prevents error when last_date and start_date are same day
     end_datetime = datetime.strptime(end_date, "%Y-%m-%d")
-    start_date = (cur_datetime - relativedelta(days=5)).strftime(
+    api_start_date = (cur_datetime - relativedelta(days=5)).strftime(
         "%Y-%m-%d"
     )  # avoid weekends
 
@@ -81,7 +81,7 @@ def main(options):
         print("ERROR: End date before start date")
         return
 
-    price_df = get_price_df(ticker, start_date, end_date)
+    price_df = get_price_df(ticker, api_start_date, end_date)
 
     initial_price = price_df.iloc[0]["close"]
     num_shares = initial_investment // initial_price  # assuming we can't do fractional
