@@ -149,14 +149,14 @@ if __name__ == "__main__":
         "--start_date",
         default=(datetime.now() - relativedelta(years=10)).strftime("%Y-%m-%d"),
         dest="start_date",
-        help="date to start calculate",
+        help="date to start calculation",
     )
     parser.add_option(
         "-e",
         "--end_date",
         default=(datetime.now()).strftime("%Y-%m-%d"),
         dest="end_date",
-        help="date to end calculate",
+        help="date to end calculation",
     )
     parser.add_option(
         "-c",
