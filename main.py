@@ -4,6 +4,8 @@ import os
 import pandas as pd
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from optparse import OptionParser
+import os
 
 API_URL = os.environ.get("API_URL")
 API_KEY = os.environ.get("API_KEY")
@@ -57,15 +59,58 @@ def get_time_delta(frequency):
 
 
 if __name__ == "__main__":
-    sys_args = sys.argv
-    ticker = sys_args[1]
-    start_date = sys_args[2]
-    end_date = sys_args[3]
-    contribution = int(sys.argv[4]) if len(sys_args) > 4 else 100
-    frequency = sys.argv[5] if len(sys_args) > 5 else "monthly"
-    initial_investment = (
-        int(sys.argv[6]) if len(sys_args) > 6 else 0
-    )  # Initial investment
+    parser = OptionParser()
+    parser.add_option(
+        "-t",
+        "--ticker",
+        default="SPY",
+        dest="ticker",
+        help="ticker to calculate return",
+    )
+    parser.add_option(
+        "-s",
+        "--start_date",
+        default=(datetime.now() - relativedelta(years=1)).strftime("%Y-%m-%d"),
+        dest="start_date",
+        help="date to start calculate",
+    )
+    parser.add_option(
+        "-e",
+        "--end_date",
+        default=(datetime.now()).strftime("%Y-%m-%d"),
+        dest="end_date",
+        help="date to end calculate",
+    )
+    parser.add_option(
+        "-c",
+        "--contribution",
+        default=100,
+        dest="contribution",
+        help="recurring contribution",
+    )
+    parser.add_option(
+        "-f",
+        "--frequency",
+        default="monthly",
+        dest="frequency",
+        help="frequency of recurring contribution",
+    )
+    parser.add_option(
+        "-i",
+        "--initial_investment",
+        default=0,
+        dest="initial_investment",
+        help="initial contribution",
+    )
+
+    (options, args) = parser.parse_args()
+
+    ticker = options.ticker
+    start_date = options.start_date
+    end_date = options.end_date
+    contribution = options.contribution
+    frequency = options.frequency
+    initial_investment = options.initial_investment
 
     timedelta = get_time_delta(frequency)
     cur_datetime = datetime.strptime(start_date, "%Y-%m-%d")
